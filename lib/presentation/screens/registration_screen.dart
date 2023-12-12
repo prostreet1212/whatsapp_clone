@@ -1,6 +1,7 @@
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/presentation/pages/phone_verification_page.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -39,10 +40,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             SizedBox(
               height: 30,
             ),
-               Text(
-      'WhatsApp Clone will send and SMS message (carrier charges may apply) to verify your phone number. Enter your country code and phone number:',
-      style: TextStyle(fontSize: 16),
-    ),
+            Text(
+              'WhatsApp Clone will send and SMS message (carrier charges may apply) to verify your phone number. Enter your country code and phone number:',
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(
               height: 30,
             ),
@@ -81,7 +82,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 child: MaterialButton(
                   color: greenColor,
                   child: Text('Next',style: TextStyle(fontSize: 18,color: Colors.white),),
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=>PhoneVerificationPage()));
+                  },
                 ),
               ),),
           ],
