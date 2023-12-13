@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/presentation/screens/home_screen.dart';
 import 'package:whatsapp_clone/presentation/screens/splash_screen.dart';
+import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'WhatsApp Clone',
       theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //primaryColor: primaryColor,
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: false,
       ),
       home: SplashScreen(),
