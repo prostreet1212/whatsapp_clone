@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/presentation/widgets/custom_tab_bar.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
+import '../pages/calls_page.dart';
+import '../pages/camera_page.dart';
+import '../pages/chat_page.dart';
+import '../pages/status_page.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -11,6 +16,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isSearch = false;
+  int _currentPageIndex=1;
+  PageController _pageViewController=PageController(initialPage: 1);
+  List<Widget> _pages=[CameraPage(),ChatPage(),StatusPage(),CallsPage()];
 
   _buildScreen() {
     return Container(
@@ -70,7 +78,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          CustomTabBar(),
+          CustomTabBar(index: 0,),
+          Expanded(
+              child: PageView.builder(
+                itemCount: _pages.length,
+                  controller: _pageViewController,
+                  onPageChanged: (index){
+                  setState(() {
+                    _currentPageIndex=index;
+                  });
+                  },
+                  itemBuilder: (_,index){
+                  return _pages[index];
+                  }))
         ],
       ),
     );
