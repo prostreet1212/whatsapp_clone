@@ -16,17 +16,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isSearch = false;
-  int _currentPageIndex=1;
-  PageController _pageViewController=PageController(initialPage: 1);
-  List<Widget> _pages=[CameraPage(),ChatPage(),StatusPage(),CallsPage()];
+  int _currentPageIndex = 1;
+  PageController _pageViewController = PageController(initialPage: 1);
+  List<Widget> _pages = [CameraPage(), ChatPage(), StatusPage(), CallsPage()];
 
   _buildScreen() {
     return Container(
       margin: EdgeInsets.only(top: 29),
       height: 48,
-      decoration: BoxDecoration(
-        color: Colors.white,
-          boxShadow: [
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
             color: Colors.black.withOpacity(.3),
             spreadRadius: 1,
@@ -39,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Icon(Icons.arrow_back),
               onTap: () {
                 setState(() {
-                  _isSearch=false;
+                  _isSearch = false;
                 });
               },
             )),
@@ -50,11 +48,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: _currentPageIndex != 0?AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: _isSearch == false?primaryColor:Colors.transparent,
-        title:_isSearch == false? Text('WhatsApp Clone'):Container(height: 0,width: 0,),
+        backgroundColor: _isSearch == false ? primaryColor : Colors.transparent,
+        title: _isSearch == false
+            ? Text('WhatsApp Clone')
+            : Container(
+                height: 0,
+                width: 0,
+              ),
         flexibleSpace: _isSearch == false
             ? Text(
                 '',
@@ -64,9 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           InkWell(
             child: Icon(Icons.search),
-            onTap: (){
+            onTap: () {
               setState(() {
-                _isSearch=true;
+                _isSearch = true;
               });
             },
           ),
@@ -75,21 +78,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Icon(Icons.more_vert),
         ],
-      ),
+      ):null,
       body: Column(
         children: [
-          CustomTabBar(index: 0,),
+          _isSearch == false
+              ? _currentPageIndex != 0
+                  ? CustomTabBar(
+                      index: _currentPageIndex,
+                    )
+                  : Container()
+              : Container(),
           Expanded(
               child: PageView.builder(
-                itemCount: _pages.length,
+                  itemCount: _pages.length,
                   controller: _pageViewController,
-                  onPageChanged: (index){
-                  setState(() {
-                    _currentPageIndex=index;
-                  });
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentPageIndex = index;
+                    });
                   },
-                  itemBuilder: (_,index){
-                  return _pages[index];
+                  itemBuilder: (_, index) {
+                    return _pages[index];
                   }))
         ],
       ),

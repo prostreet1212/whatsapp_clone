@@ -27,23 +27,21 @@ class CustomTabBar extends StatelessWidget {
               text: 'CHATS',
               textColor: index == 1? textIconColor  : textIconColorGray,
               borderColor: index == 1?textIconColorGray:Colors.transparent,
-              borderWidth: 0,//?
             ),
           ),
           Expanded(
             child: CustomTabBarButton(
               text: 'STATUS',
-              textColor: Colors.white,
-              borderColor: Colors.transparent,
-              borderWidth: 0,
+              textColor: index == 2? textIconColor  : textIconColorGray,
+              borderColor: index == 2?textIconColorGray:Colors.transparent,
             ),
           ),
           Expanded(
             child: CustomTabBarButton(
               text: 'CALLS',
-              textColor: Colors.white,
-              borderColor: Colors.transparent,
-              borderWidth: 0,
+              textColor: index == 3? textIconColor  : textIconColorGray,
+              borderColor: index == 3?textIconColorGray:Colors.transparent,
+
             ),
           ),
         ],
@@ -58,7 +56,7 @@ class CustomTabBarButton extends StatelessWidget {
     required this.text,
     required this.borderColor,
     required this.textColor,
-     required this.borderWidth,
+     this.borderWidth=3,
   }) : super(key: key);
 
   final String text;
@@ -72,7 +70,7 @@ class CustomTabBarButton extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
           border: Border(
-        bottom: BorderSide(color: borderColor, width: borderWidth),
+        bottom: BorderSide(color: borderColor, width: borderWidth!),
       )),
       child: Text(
         text,
