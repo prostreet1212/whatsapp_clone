@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -42,9 +42,14 @@ dependencies:
 
   #responsive_builder: ^0.3.0
   camera: ^0.10.5+7
-  #custom_image_picker: ^0.0.3
+  #custom_image_picker: ^0.5.0
+  image_picker: ^1.0.5
   #message shape bubble
   bubble: ^1.1.9+1
+
+  custom_image_picker:
+    git:
+      url: https://github.com/Zazo032/custom_image_picker.git
 
   country_pickers: ^2.0.0
 
