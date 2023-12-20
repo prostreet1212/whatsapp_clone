@@ -8,6 +8,7 @@ import 'package:whatsapp_clone/domain/repositories/firebase_repository.dart';
 import 'package:whatsapp_clone/domain/usecases/get_create_current_user_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/get_current_uid_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/is_sign_in_use_case.dart';
+import 'package:whatsapp_clone/presentation/bloc/auth/auth_cubit.dart';
 
 import 'domain/usecases/sign_in_with_phone_number_usecase.dart';
 import 'domain/usecases/sign_out_usecase.dart';
@@ -17,20 +18,23 @@ GetIt sl = GetIt.instance;
 
 Future<void> init() async {
   //future bloc
+  sl.registerFactory<AuthCubit>(() => AuthCubit(
+      isSignInUseCase: sl.call(),
+      getCurrentUidUseCase: sl.call(),
+      signOutUseCase: sl.call()));
 
   //usecase
   sl.registerLazySingleton<GetCreateCurrentUserUseCase>(
       () => GetCreateCurrentUserUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetCurrentUidUseCase>(
       () => GetCurrentUidUseCase(sl.call()));
-  sl.registerLazySingleton<IsSignInUseCase>(
-          () => IsSignInUseCase(sl.call()));
+  sl.registerLazySingleton<IsSignInUseCase>(() => IsSignInUseCase(sl.call()));
   sl.registerLazySingleton<SignInWithPhoneNumberUseCase>(
-          () => SignInWithPhoneNumberUseCase(repository: sl.call()));
+      () => SignInWithPhoneNumberUseCase(repository: sl.call()));
   sl.registerLazySingleton<SignOutUseCase>(
-          () => SignOutUseCase(repository: sl.call()));
+      () => SignOutUseCase(repository: sl.call()));
   sl.registerLazySingleton<VerifyPhoneNumberUseCase>(
-          () => VerifyPhoneNumberUseCase(repository: sl.call()));
+      () => VerifyPhoneNumberUseCase(repository: sl.call()));
   //repository
   sl.registerLazySingleton(
       () => FirebaseRepositotyImpl(remoteDataSource: sl.call()));
