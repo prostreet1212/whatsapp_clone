@@ -10,13 +10,13 @@ class UserEntity extends Equatable {
   final String profileUrl;
 
   UserEntity({
-    this.name,
-    this.email,
-    this.phoneNumber,
-    this.isOnline,
-    this.uid,
-    this.status,
-    this.profileUrl,
+    required this.name,
+    required this.email,
+    required this.phoneNumber,
+    required this.isOnline,
+    required this.uid,
+    required this.status,
+    required  this.profileUrl,
   });
 
   @override
