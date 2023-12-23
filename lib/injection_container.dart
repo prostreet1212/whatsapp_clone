@@ -9,6 +9,7 @@ import 'package:whatsapp_clone/domain/usecases/get_create_current_user_usecase.d
 import 'package:whatsapp_clone/domain/usecases/get_current_uid_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/is_sign_in_use_case.dart';
 import 'package:whatsapp_clone/presentation/bloc/auth/auth_cubit.dart';
+import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 
 import 'domain/usecases/sign_in_with_phone_number_usecase.dart';
 import 'domain/usecases/sign_out_usecase.dart';
@@ -22,6 +23,11 @@ Future<void> init() async {
       isSignInUseCase: sl.call(),
       getCurrentUidUseCase: sl.call(),
       signOutUseCase: sl.call()));
+
+  sl.registerFactory<PhoneAuthCubit>(() => PhoneAuthCubit(signInWithPhoneNumberUseCase: sl.call(),
+      verifyPhoneNumberUseCase: sl.call(),
+      getCreateCurrentUserUseCase: sl.call(),
+  ));
 
   //usecase
   sl.registerLazySingleton<GetCreateCurrentUserUseCase>(

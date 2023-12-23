@@ -15,7 +15,7 @@ class UserEntity extends Equatable {
     required this.phoneNumber,
     required this.isOnline,
     required this.uid,
-    required this.status,
+    this.status='Hello there i\'m using this app',
     required  this.profileUrl,
   });
 
