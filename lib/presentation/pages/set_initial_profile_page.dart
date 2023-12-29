@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone/presentation/screens/home_screen.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
 class SetInitialProfilePage extends StatefulWidget {
-  const SetInitialProfilePage({Key? key}) : super(key: key);
+  final String phoneNumber;
+
+  const SetInitialProfilePage({Key? key, required this.phoneNumber})
+      : super(key: key);
 
   @override
   State<SetInitialProfilePage> createState() => _SetInitialProfilePageState();
 }
 
 class _SetInitialProfilePageState extends State<SetInitialProfilePage> {
-
-  TextEditingController _nameController=TextEditingController();
+  String get _phoneNumber => widget.phoneNumber;
+  TextEditingController _nameController = TextEditingController();
 
   @override
   void dispose() {
@@ -57,9 +62,7 @@ class _SetInitialProfilePageState extends State<SetInitialProfilePage> {
                     'Next',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_)=>HomeScreen()));
-                  },
+                  onPressed: _submitProfileInfo
                 ),
               ),
             ),
@@ -96,7 +99,7 @@ class _SetInitialProfilePageState extends State<SetInitialProfilePage> {
           SizedBox(width: 8),
           Container(
             width: 35,
-            height:35,
+            height: 35,
             decoration: BoxDecoration(
               color: textIconColorGray,
               borderRadius: BorderRadius.all(Radius.circular(25)),
@@ -107,4 +110,12 @@ class _SetInitialProfilePageState extends State<SetInitialProfilePage> {
       ),
     );
   }
+
+  void _submitProfileInfo() {
+    if (_nameController.text.isNotEmpty) {
+      BlocProvider.of<PhoneAuthCubit>(context).submitProfileInfo(
+          name: _nameController.text, profileUrl: '', phoneNumber: _phoneNumber);
+    }
+  }
+
 }

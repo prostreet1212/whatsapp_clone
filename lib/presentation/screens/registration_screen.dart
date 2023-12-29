@@ -20,8 +20,9 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   static Country _selectedFilteredDialogCountry =
-      CountryPickerUtils.getCountryByPhoneCode('92');
+      CountryPickerUtils.getCountryByPhoneCode('7');
   String _countryCode = _selectedFilteredDialogCountry.phoneCode;
+  String _phoneNumber = '';
 
   TextEditingController _phoneAuthController = TextEditingController();
 
@@ -33,37 +34,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PhoneAuthCubit, PhoneAuthState>(
-      listener: (context,phoneAuthState){
-        if(phoneAuthState is PhoneAuthSuccess){
-          BlocProvider.of<AuthCubit>(context).loggedIn();
-        }
-      },
-      builder: (context, phoneAuthState) {
-        if (phoneAuthState is PhoneAuthSmsCodeReceived) {
-          return PhoneVerificationPage();
-        }
-        if(phoneAuthState is PhoneAuthProfileInfo){
-          return SetInitialProfilePage();
-        }
-        if(phoneAuthState is PhoneAuthLoading){
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        if(phoneAuthState is PhoneAuthSuccess){
-          return BlocBuilder<AuthCubit,AuthState>(
-              builder: (context,authState){
-                if(authState is Authenticated){
-                  return HomeScreen(uid: authState.uid);
-                }
-                return Container();
-              });
-        }
-        return _bodyWidget();
-      },
+    _phoneAuthController.text='9532602744';
+    return Scaffold(
+      body: BlocConsumer<PhoneAuthCubit, PhoneAuthState>(
+        listener: (context, phoneAuthState) {
+          if (phoneAuthState is PhoneAuthSuccess) {
+            BlocProvider.of<AuthCubit>(context).loggedIn();
+          }
+          if(phoneAuthState is PhoneAuthFailure){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                  content: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Something is wrong'),
+                        Icon(Icons.error_outline)
+                      ],
+                    ),
+                  ),
+              ),
+            );
+          }
+        },
+        builder: (context, phoneAuthState) {
+          if (phoneAuthState is PhoneAuthSmsCodeReceived) {
+            return PhoneVerificationPage(
+              phoneNumber: _phoneNumber,
+            );
+          }
+          if (phoneAuthState is PhoneAuthProfileInfo) {
+            return SetInitialProfilePage(
+              phoneNumber: _phoneNumber,
+            );
+          }
+          if (phoneAuthState is PhoneAuthLoading) {
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (phoneAuthState is PhoneAuthSuccess) {
+            return BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, authState) {
+                  if (authState is Authenticated) {
+                    return HomeScreen(uid: authState.uid);
+                  }
+                  return Container();
+                });
+          }
+          return _bodyWidget();
+        },
+      ),
     );
   }
 
@@ -119,6 +144,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   child: Container(
                     height: 40,
                     child: TextField(
+                      controller: _phoneAuthController,
                       decoration: InputDecoration(hintText: 'Phone Number'),
                     ),
                   ),
@@ -135,7 +161,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                   onPressed: _submitVerifyPhoneNumber,
-
                 ),
               ),
             ),
@@ -196,9 +221,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  void _submitVerifyPhoneNumber(){
-    if(_phoneAuthController.text.isNotEmpty){
-      BlocProvider.of<PhoneAuthCubit>(context).submitVerifyPhoneNumber(phoneNumber: '+${_countryCode}${_phoneAuthController.text}');
-    }
+  void _submitVerifyPhoneNumber() {
+    if (_phoneAuthController.text.isNotEmpty)
+      _phoneNumber = '+${_countryCode}${_phoneAuthController.text}';
+    BlocProvider.of<PhoneAuthCubit>(context)
+        .submitVerifyPhoneNumber(phoneNumber: _phoneNumber);
   }
 }

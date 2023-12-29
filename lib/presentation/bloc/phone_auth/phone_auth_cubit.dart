@@ -55,7 +55,7 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
           uid: '',
           status: '',
           profileUrl: profileUrl));
-      emit(PhoneAuthProfileInfo());
+      emit(PhoneAuthSuccess());
     } on SocketException catch (_) {
       emit(PhoneAuthFailure());
     } catch (_) {

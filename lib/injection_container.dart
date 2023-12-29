@@ -42,7 +42,7 @@ Future<void> init() async {
   sl.registerLazySingleton<VerifyPhoneNumberUseCase>(
       () => VerifyPhoneNumberUseCase(repository: sl.call()));
   //repository
-  sl.registerLazySingleton(
+  sl.registerLazySingleton<FireBaseRepository>(
       () => FirebaseRepositotyImpl(remoteDataSource: sl.call()));
 
   //remote data

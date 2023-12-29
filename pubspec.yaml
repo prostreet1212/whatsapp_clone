@@ -46,6 +46,7 @@ dependencies:
   camera: ^0.10.5+7
   #custom_image_picker: ^0.5.0
   image_picker: ^1.0.5
+  photo_manager: ^3.0.0-dev.1
   #message shape bubble
   bubble: ^1.1.9+1
 

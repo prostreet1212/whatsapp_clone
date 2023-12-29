@@ -49,7 +49,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   @override
   Future<void> signInWithPhoneNumber(String smsPinCode) async {
     final AuthCredential authCredential = PhoneAuthProvider.credential(
-        verificationId: _verificationId, smsCode: smsPinCode);
+        verificationId: _verificationId, smsCode: smsPinCode,);
     await auth.signInWithCredential(authCredential);
   }
 
@@ -76,6 +76,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     };
     final PhoneCodeSent phoneCodeSent =
         (String verificationId, int? forceResendingToken) {};
+    await auth.setSettings(appVerificationDisabledForTesting: true);
     auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: phoneVerificationCompleted,

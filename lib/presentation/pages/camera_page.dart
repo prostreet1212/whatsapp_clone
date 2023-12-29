@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:custom_image_picker/custom_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   late List<CameraDescription> cameras;
-  late CameraController _cameraController;
+   CameraController? _cameraController;
   List<String> _galleryPhotos = [];
 
   @override
@@ -27,12 +28,13 @@ class _CameraPageState extends State<CameraPage> {
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
     _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
-    _cameraController.initialize().then((value) {
-      if (mounted) return;
+    _cameraController!.initialize().then((value) {
+      if (!mounted) return;
       setState(() {});
     });
   }
   Future<void> getImagesFromGallery() async {
+
 
     await CustomImagePicker().getAllImages(callback: (value) {
       setState(() {
@@ -49,7 +51,7 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_cameraController.value.isInitialized) {
+    if (_cameraController==null||!_cameraController!.value.isInitialized) {
       return Container();
     }
     return Scaffold(
@@ -58,7 +60,7 @@ class _CameraPageState extends State<CameraPage> {
           Container(
             height: double.infinity,
             width: double.infinity,
-            child: CameraPreview(_cameraController),
+            child: CameraPreview(_cameraController!),
           ),
           _galleryWidget(),
           _cameraButtonWidget(),
@@ -88,10 +90,26 @@ class _CameraPageState extends State<CameraPage> {
                 border: Border.all(color: Colors.white, width: 2),
               ),
             ),
-            Icon(
-              Icons.camera_alt,
-              size: 30,
-              color: Colors.white,
+            InkWell(
+              onTap: ()async {
+                final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
+                  imageOption: const FilterOption(
+                    sizeConstraint: SizeConstraint(ignoreSize: true),
+                  ),);
+                final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
+                  onlyAll: true,
+                  filterOption: _filterOptionGroup,
+                );
+                paths.forEach((element) {
+                  print(element.name);
+
+                });
+              },
+              child: Icon(
+                Icons.camera_alt,
+                size: 30,
+                color: Colors.white,
+              ),
             )
           ],
         ),

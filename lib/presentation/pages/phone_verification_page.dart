@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone/presentation/pages/set_initial_profile_page.dart';
 
 import '../widgets/theme/style.dart';
 
 
 class PhoneVerificationPage extends StatefulWidget {
-  const PhoneVerificationPage({Key? key}) : super(key: key);
+  final String phoneNumber;
+  const PhoneVerificationPage({Key? key, required this.phoneNumber}) : super(key: key);
 
   @override
   State<PhoneVerificationPage> createState() => _PhoneVerificationPageState();
 }
 
 class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
+  String get _phoneNumber=>widget.phoneNumber;
   TextEditingController _pinCodeController=TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -50,9 +54,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                 child: MaterialButton(
                   color: greenColor,
                   child: Text('Next',style: TextStyle(fontSize: 18,color: Colors.white),),
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_)=>SetInitialProfilePage()));
-                  },
+                  onPressed: _submitSmsCode,
                 ),
               ),),
           ],
@@ -80,10 +82,12 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    _pinCodeController.dispose();
-    super.dispose();
+  
+  void _submitSmsCode(){
+    if(_pinCodeController.text.isNotEmpty){
+      BlocProvider.of<PhoneAuthCubit>(context).submitSmsCode(smsCode: _pinCodeController.text);
+    }
   }
+
+
 }
