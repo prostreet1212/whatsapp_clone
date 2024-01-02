@@ -16,12 +16,12 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   late List<CameraDescription> cameras;
    CameraController? _cameraController;
-  List<String> _galleryPhotos = [];
+ late  Future<List<AssetEntity>> _galleryPhotos;
 
   @override
   void initState() {
     initializeCamera();
-    getImagesFromGallery();
+    _galleryPhotos=getImagesFromGallery();
     super.initState();
   }
 
@@ -33,19 +33,35 @@ class _CameraPageState extends State<CameraPage> {
       setState(() {});
     });
   }
-  Future<void> getImagesFromGallery() async {
+  Future<List<AssetEntity>> getImagesFromGallery() async {
+    final PermissionState ps = await PhotoManager.requestPermissionExtend(); // the method can use optional param `permission`.
+    if (ps.isAuth) {
+      print('isAuth');
+      final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
+        imageOption: const FilterOption(
+          sizeConstraint: SizeConstraint(ignoreSize: true),
+        ),
+      );
+      final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
+        onlyAll: true,
+        filterOption: _filterOptionGroup,
+      );
+      paths.forEach((element) {
+        print('ПАПКИ $element');
+      });
+      final List<AssetEntity> entities = await paths[0].getAssetListPaged(page: 0, size: 10000);
+
+        return entities;
 
 
-    await CustomImagePicker().getAllImages(callback: (value) {
-      setState(() {
-        _galleryPhotos = value;
-      });
-      _galleryPhotos.forEach((element) {
-        print(element);
-      });
-    }).then((value) {
-    print('a');
-    });
+    } else if (ps.hasAccess) {
+      print('hasAccess');
+      return [];
+    } else {
+      print('access denied photo');
+      return [];
+    }
+
 
   }
 
@@ -92,18 +108,8 @@ class _CameraPageState extends State<CameraPage> {
             ),
             InkWell(
               onTap: ()async {
-                final FilterOptionGroup _filterOptionGroup = FilterOptionGroup(
-                  imageOption: const FilterOption(
-                    sizeConstraint: SizeConstraint(ignoreSize: true),
-                  ),);
-                final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-                  onlyAll: true,
-                  filterOption: _filterOptionGroup,
-                );
-                paths.forEach((element) {
-                  print(element.name);
 
-                });
+
               },
               child: Icon(
                 Icons.camera_alt,
@@ -124,22 +130,44 @@ class _CameraPageState extends State<CameraPage> {
         left: 0,
         child: Container(
           height: 55,
-          color: Colors.orange,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _galleryPhotos.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.only(right: 8),
-                  height: 55,
-                  width: 50,
-                  decoration: BoxDecoration(color: Colors.red.withOpacity(.2)),
-                  child: Image.file(
-                    File(_galleryPhotos[index]),
-                    fit: BoxFit.cover,
-                  ),
-                );
-              }),
+          //color: Colors.orange,
+          child: FutureBuilder(
+            future: _galleryPhotos,
+            builder: (context,snapshot){
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+                return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 8),
+                        height: 55,
+                        width: 50,
+                        decoration: BoxDecoration(color: Colors.red.withOpacity(.2)),
+                        child: FutureBuilder(
+                          future: snapshot.data![index].thumbnailData,
+                          builder: (context,snapshot){
+                            if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                              return Image.memory(
+                                snapshot.data!,
+                                //_galleryPhotos[index].thumbnailData,
+                                //File(_galleryPhotos[index]),
+                                fit: BoxFit.cover,
+                              );
+                            }else{
+                              return Container();
+                            }
+
+                          },
+                        ),
+                      );
+                    });
+              }else{
+                return Container();
+              }
+
+            },
+          ),
         ));
   }
 }

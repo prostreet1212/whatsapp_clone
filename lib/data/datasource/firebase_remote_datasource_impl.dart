@@ -76,7 +76,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     };
     final PhoneCodeSent phoneCodeSent =
         (String verificationId, int? forceResendingToken) {};
-    await auth.setSettings(appVerificationDisabledForTesting: true);
+    await auth.setSettings(/*appVerificationDisabledForTesting: true*/);
     auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: phoneVerificationCompleted,
