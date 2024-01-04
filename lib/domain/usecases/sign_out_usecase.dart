@@ -1,7 +1,7 @@
 import 'package:whatsapp_clone/domain/repositories/firebase_repository.dart';
 
 class SignOutUseCase{
-  FireBaseRepository repository;
+  FirebaseRepository repository;
 
   SignOutUseCase({required this.repository});
 

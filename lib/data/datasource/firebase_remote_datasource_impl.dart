@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whatsapp_clone/data/datasource/firebase_remote_datasource.dart';
 import 'package:whatsapp_clone/data/model/user_model.dart';
+import 'package:whatsapp_clone/domain/entities/my_chat_entity.dart';
+import 'package:whatsapp_clone/domain/entities/text_message_entity.dart';
 import 'package:whatsapp_clone/domain/entities/user_entity.dart';
 
 class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
@@ -84,5 +86,46 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         timeout: const Duration(seconds: 10),
         codeSent: phoneCodeSent,
         codeAutoRetrievalTimeout: phoneCodeAutoRetrievalTimeout);
+  }
+
+  @override
+  Future<void> addToMyChat(MyChatEntity myChatEntity) {
+    // TODO: implement addToMyChat
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> createOneToOneChatChannel(String uid, String otherUid) {
+    // TODO: implement createOneToOneChatChannel
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<UserEntity>> getAllUsers() {
+  final userCollection 
+  }
+
+  @override
+  Stream<List<TextMessageEntity>> getMessages(String channelId) {
+    // TODO: implement getMessages
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<MyChatEntity>> getMyChat(String uid) {
+    // TODO: implement getMyChat
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> getOneToOneSingleUserChannelId(String uid, String otherUid) {
+    // TODO: implement getOneToOneSingleUserChannelId
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendTextMessage(TextMessageEntity textMessageEntity, String channelId) {
+    // TODO: implement sendTextMessage
+    throw UnimplementedError();
   }
 }

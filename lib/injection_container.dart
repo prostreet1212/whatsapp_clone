@@ -11,6 +11,13 @@ import 'package:whatsapp_clone/domain/usecases/is_sign_in_use_case.dart';
 import 'package:whatsapp_clone/presentation/bloc/auth/auth_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 
+import 'domain/usecases/add_to_my_chat_usecase.dart';
+import 'domain/usecases/create_one_to_one_chat_channel_usecase.dart';
+import 'domain/usecases/get_all_users_usecase.dart';
+import 'domain/usecases/get_my_chat_usecase.dart';
+import 'domain/usecases/get_one_to_one_single_user_chat_channel_usecase.dart';
+import 'domain/usecases/get_text_messages_usecase.dart';
+import 'domain/usecases/send_text_message_usecase.dart';
 import 'domain/usecases/sign_in_with_phone_number_usecase.dart';
 import 'domain/usecases/sign_out_usecase.dart';
 import 'domain/usecases/verify_phone_number_usecase.dart';
@@ -41,8 +48,26 @@ Future<void> init() async {
       () => SignOutUseCase(repository: sl.call()));
   sl.registerLazySingleton<VerifyPhoneNumberUseCase>(
       () => VerifyPhoneNumberUseCase(repository: sl.call()));
+
+  sl.registerLazySingleton<GetAllUsersUseCase>(
+          () => GetAllUsersUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetMyChatUseCase>(
+          () => GetMyChatUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetTextMessagesUseCase>(
+          () => GetTextMessagesUseCase(repository: sl.call()));
+  sl.registerLazySingleton<SendTextMessageUseCase>(
+          () => SendTextMessageUseCase(repository: sl.call()));
+  sl.registerLazySingleton<AddToMyChatUseCase>(
+          () => AddToMyChatUseCase(repository: sl.call()));
+  sl.registerLazySingleton<CreateOneToOneChatChannelUseCase>(
+          () => CreateOneToOneChatChannelUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetOneToOneSingleUserChatChannelUseCase>(
+          () => GetOneToOneSingleUserChatChannelUseCase(repository: sl.call()));
+
+
+
   //repository
-  sl.registerLazySingleton<FireBaseRepository>(
+  sl.registerLazySingleton<FirebaseRepository>(
       () => FirebaseRepositotyImpl(remoteDataSource: sl.call()));
 
   //remote data

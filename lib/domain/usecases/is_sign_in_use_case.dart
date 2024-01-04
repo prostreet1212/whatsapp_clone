@@ -1,7 +1,7 @@
 import 'package:whatsapp_clone/domain/repositories/firebase_repository.dart';
 
 class IsSignInUseCase{
-  FireBaseRepository repository;
+  FirebaseRepository repository;
 
   IsSignInUseCase(this.repository);
 

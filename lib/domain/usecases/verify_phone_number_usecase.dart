@@ -3,7 +3,7 @@
 import 'package:whatsapp_clone/domain/repositories/firebase_repository.dart';
 
 class VerifyPhoneNumberUseCase{
-  final FireBaseRepository repository;
+  final FirebaseRepository repository;
 
   VerifyPhoneNumberUseCase({required this.repository});
   

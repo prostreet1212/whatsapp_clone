@@ -3,7 +3,7 @@
 import '../repositories/firebase_repository.dart';
 
 class GetCurrentUidUseCase{
-  FireBaseRepository repository;
+  FirebaseRepository repository;
 
   GetCurrentUidUseCase(this.repository);
 
