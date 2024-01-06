@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:camera/camera.dart';
-import 'package:custom_image_picker/custom_image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class CameraPage extends StatefulWidget {
@@ -145,10 +141,10 @@ class _CameraPageState extends State<CameraPage> {
                         width: 50,
                         decoration: BoxDecoration(color: Colors.red.withOpacity(.2)),
                         child: FutureBuilder(
-                          future: snapshot.data![index].thumbnailData,
+                          future: snapshot.data![index].file,
                           builder: (context,snapshot){
                             if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                              return Image.memory(
+                              return Image.file(
                                 snapshot.data!,
                                 //_galleryPhotos[index].thumbnailData,
                                 //File(_galleryPhotos[index]),

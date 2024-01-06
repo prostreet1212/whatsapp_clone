@@ -19,19 +19,19 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final userCollection = fireStore.collection('users');
     final uid = await getCurrentUID();
     userCollection.doc(uid).get().then((userDoc) {
-      Map<String,dynamic> newUser = UserModel(
-              name: user.name,
-              email: user.email,
-              phoneNumber: user.phoneNumber,
-              isOnline: user.isOnline,
-              uid: uid,
-              status: user.status,
-              profileUrl: user.profileUrl)
+      Map<String, dynamic> newUser = UserModel(
+          name: user.name,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          isOnline: user.isOnline,
+          uid: uid,
+          status: user.status,
+          profileUrl: user.profileUrl)
           .toDocument();
-      if(!userDoc.exists){
+      if (!userDoc.exists) {
         //create new user
         userCollection.doc(uid).set(newUser);
-      }else{
+      } else {
         //update user doc
         userCollection.doc(uid).update(newUser);
       }
@@ -51,7 +51,9 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   @override
   Future<void> signInWithPhoneNumber(String smsPinCode) async {
     final AuthCredential authCredential = PhoneAuthProvider.credential(
-        verificationId: _verificationId, smsCode: smsPinCode,);
+      verificationId: _verificationId,
+      smsCode: smsPinCode,
+    );
     await auth.signInWithCredential(authCredential);
   }
 
@@ -69,7 +71,8 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final PhoneVerificationFailed phoneVerificationFailed =
         (FirebaseAuthException firebaseAuthException) {
       print(
-          'phone failed: ${firebaseAuthException.message}, ${firebaseAuthException.code}');
+          'phone failed: ${firebaseAuthException
+              .message}, ${firebaseAuthException.code}');
     };
     final PhoneCodeAutoRetrievalTimeout phoneCodeAutoRetrievalTimeout =
         (String verificationId) {
@@ -95,14 +98,43 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
-  Future<void> createOneToOneChatChannel(String uid, String otherUid) {
-    // TODO: implement createOneToOneChatChannel
-    throw UnimplementedError();
+  Future<void> createOneToOneChatChannel(String uid, String otherUid) async {
+    final userCollectionRef = fireStore.collection('users');
+    final oneToOneChatChanelRef = fireStore.collection('myChatChannel');
+
+    userCollectionRef.doc(uid).collection('engagedChatChannel')
+        .doc(otherUid).get().then((chatChannelDoc) {
+      if (chatChannelDoc.exists) {
+        return;
+      }
+      //если не существует
+      final String _chatChannelId = oneToOneChatChanelRef
+          .doc()
+          .id;
+      var channelMap = {
+        'channelId': _chatChannelId,
+        'channelType': 'oneToOneChat'
+      };
+      oneToOneChatChanelRef.doc(_chatChannelId).set(channelMap);
+
+      //текущий пользователь
+      userCollectionRef.doc(uid).collection('engagedChatChannel')
+          .doc(otherUid).set(channelMap);
+      //собеседник
+      userCollectionRef.doc(otherUid).collection('engagedChatChannel')
+          .doc(uid).set(channelMap);
+      return;
+    });
   }
 
   @override
   Stream<List<UserEntity>> getAllUsers() {
-  final userCollection 
+    final userCollectionRef = fireStore.collection('users');
+    return userCollectionRef.snapshots().map((querySnapshot) {
+      return querySnapshot.docs
+          .map((docQuerySnapshot) => UserModel.fromSnapshot(docQuerySnapshot))
+          .toList();
+    });
   }
 
   @override
@@ -119,13 +151,22 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
   @override
   Future<String> getOneToOneSingleUserChannelId(String uid, String otherUid) {
-    // TODO: implement getOneToOneSingleUserChannelId
-    throw UnimplementedError();
+    final userCollectionRef = fireStore.collection('users');
+    return userCollectionRef.doc(uid)
+        .collection('engagedChatChannel')
+        .doc(otherUid).get().then((engagedChatChannel) {
+      if (engagedChatChannel.exists) {
+        return engagedChatChannel.data()!['channelId'];
+      }
+      return Future.value(null);
+    });
   }
 
   @override
-  Future<void> sendTextMessage(TextMessageEntity textMessageEntity, String channelId) {
+  Future<void> sendTextMessage(TextMessageEntity textMessageEntity,
+      String channelId) {
     // TODO: implement sendTextMessage
     throw UnimplementedError();
   }
+
 }

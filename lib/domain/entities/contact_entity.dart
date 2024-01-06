@@ -7,7 +7,7 @@ class ContactEntity {
   ContactEntity(
    { required this.phoneNumber,
     required this.label,
-    required this.uid,
-    required this.status,}
+   this.uid='',
+     this.status='',}
   );
 }

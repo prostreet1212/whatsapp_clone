@@ -36,16 +36,14 @@ class FirebaseRepositotyImpl extends FirebaseRepository {
   }
 
   @override
-  Future<void> createOneToOneChatChannel(String uid, String otherUid) {
-    // TODO: implement createOneToOneChatChannel
-    throw UnimplementedError();
-  }
+  Future<void> createOneToOneChatChannel(String uid, String otherUid)
+  => remoteDataSource.createOneToOneChatChannel(uid, otherUid);
+
+
 
   @override
-  Stream<List<UserEntity>> getAllUsers() {
-    // TODO: implement getAllUsers
-    throw UnimplementedError();
-  }
+  Stream<List<UserEntity>> getAllUsers() =>
+      remoteDataSource.getAllUsers();
 
   @override
   Stream<List<TextMessageEntity>> getMessages(String channelId) {
@@ -60,10 +58,8 @@ class FirebaseRepositotyImpl extends FirebaseRepository {
   }
 
   @override
-  Future<String> getOneToOneSingleUserChannelId(String uid, String otherUid) {
-    // TODO: implement getOneToOneSingleUserChannelId
-    throw UnimplementedError();
-  }
+  Future<String> getOneToOneSingleUserChannelId(String uid, String otherUid) =>
+      remoteDataSource.getOneToOneSingleUserChannelId(uid, otherUid);
 
   @override
   Future<void> sendTextMessage(TextMessageEntity textMessageEntity, String channelId) {

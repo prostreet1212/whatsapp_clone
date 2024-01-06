@@ -3,13 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:whatsapp_clone/data/datasource/firebase_remote_datasource.dart';
 import 'package:whatsapp_clone/data/datasource/firebase_remote_datasource_impl.dart';
+import 'package:whatsapp_clone/data/local_datasource/local_data_source.dart';
 import 'package:whatsapp_clone/data/repository/firebase_repository_impl.dart';
+import 'package:whatsapp_clone/data/repository/get_device_number_repository_impl.dart';
 import 'package:whatsapp_clone/domain/repositories/firebase_repository.dart';
+import 'package:whatsapp_clone/domain/repositories/get_device_number_repository.dart';
 import 'package:whatsapp_clone/domain/usecases/get_create_current_user_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/get_current_uid_usecase.dart';
+import 'package:whatsapp_clone/domain/usecases/get_device_numbers_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/is_sign_in_use_case.dart';
 import 'package:whatsapp_clone/presentation/bloc/auth/auth_cubit.dart';
+import 'package:whatsapp_clone/presentation/bloc/get_device_number/get_device_number_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
+import 'package:whatsapp_clone/presentation/bloc/user/user_cubit.dart';
 
 import 'domain/usecases/add_to_my_chat_usecase.dart';
 import 'domain/usecases/create_one_to_one_chat_channel_usecase.dart';
@@ -31,10 +37,16 @@ Future<void> init() async {
       getCurrentUidUseCase: sl.call(),
       signOutUseCase: sl.call()));
 
-  sl.registerFactory<PhoneAuthCubit>(() => PhoneAuthCubit(signInWithPhoneNumberUseCase: sl.call(),
-      verifyPhoneNumberUseCase: sl.call(),
-      getCreateCurrentUserUseCase: sl.call(),
-  ));
+  sl.registerFactory<PhoneAuthCubit>(() => PhoneAuthCubit(
+        signInWithPhoneNumberUseCase: sl.call(),
+        verifyPhoneNumberUseCase: sl.call(),
+        getCreateCurrentUserUseCase: sl.call(),
+      ));
+  sl.registerFactory<GetDeviceNumberCubit>(() => GetDeviceNumberCubit(
+      getDeviceNumberUseCase: sl.call()));
+  sl.registerFactory<UserCubit>(() => UserCubit(
+      getAllUserUseCase: sl.call(),
+      createOneToOneChatChannelUseCase: sl.call()));
 
   //usecase
   sl.registerLazySingleton<GetCreateCurrentUserUseCase>(
@@ -50,29 +62,32 @@ Future<void> init() async {
       () => VerifyPhoneNumberUseCase(repository: sl.call()));
 
   sl.registerLazySingleton<GetAllUsersUseCase>(
-          () => GetAllUsersUseCase(repository: sl.call()));
+      () => GetAllUsersUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetMyChatUseCase>(
-          () => GetMyChatUseCase(repository: sl.call()));
+      () => GetMyChatUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetTextMessagesUseCase>(
-          () => GetTextMessagesUseCase(repository: sl.call()));
+      () => GetTextMessagesUseCase(repository: sl.call()));
   sl.registerLazySingleton<SendTextMessageUseCase>(
-          () => SendTextMessageUseCase(repository: sl.call()));
+      () => SendTextMessageUseCase(repository: sl.call()));
   sl.registerLazySingleton<AddToMyChatUseCase>(
-          () => AddToMyChatUseCase(repository: sl.call()));
+      () => AddToMyChatUseCase(repository: sl.call()));
   sl.registerLazySingleton<CreateOneToOneChatChannelUseCase>(
-          () => CreateOneToOneChatChannelUseCase(repository: sl.call()));
+      () => CreateOneToOneChatChannelUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetOneToOneSingleUserChatChannelUseCase>(
-          () => GetOneToOneSingleUserChatChannelUseCase(repository: sl.call()));
-
-
+      () => GetOneToOneSingleUserChatChannelUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetDeviceNumberUseCase>(
+      () => GetDeviceNumberUseCase(deviceNumberRepository: sl.call()));
 
   //repository
   sl.registerLazySingleton<FirebaseRepository>(
       () => FirebaseRepositotyImpl(remoteDataSource: sl.call()));
+  sl.registerLazySingleton<GetDeviceNumberRepository>(
+      () => GetDeviceNumberRepositoryImpl(localDataSource: sl.call()));
 
   //remote data
   sl.registerLazySingleton<FirebaseRemoteDataSource>(() =>
       FirebaseRemoteDataSourceImpl(auth: sl.call(), fireStore: sl.call()));
+  sl.registerLazySingleton<LocalDataSource>(() => LocalDataSourceImpl());
 
   //external
   final auth = FirebaseAuth.instance;

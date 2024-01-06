@@ -3,13 +3,13 @@ import 'package:whatsapp_clone/domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
   UserModel({
-    required String name,
-    required  String email,
-    required String phoneNumber,
-    required bool isOnline,
-    required String uid,
-    required String status,
-    required String profileUrl,
+     String name='',
+      String email='',
+     String phoneNumber='',
+     bool isOnline=false,
+     String uid='',
+     String status='',
+     String profileUrl='',
   }) : super(
             name: name,
             email: email,
@@ -19,7 +19,21 @@ class UserModel extends UserEntity {
             status: status,
             profileUrl: profileUrl);
 
-  factory UserModel.fromSnapshot(Map<String, dynamic> snapshot) {
+
+  factory UserModel.fromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return UserModel(
+      name: data['name'],
+      email: data['email'],
+      phoneNumber: data['phoneNumber'],
+      uid: data['uid'],
+      isOnline: data['isOnline'],
+      profileUrl: data['profileUrl'],
+      status: data['status'],
+    );
+  }
+
+ /* factory UserModel.fromSnapshot(Map<String, dynamic> snapshot) {
     return UserModel(
       name: snapshot['name'],
       email: snapshot['email'],
@@ -29,7 +43,7 @@ class UserModel extends UserEntity {
       profileUrl: snapshot['profileUrl'],
       status: snapshot['status'],
     );
-  }
+  }*/
 
   Map<String, dynamic> toDocument() {
     return {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/domain/entities/user_entity.dart';
 import 'package:whatsapp_clone/presentation/widgets/custom_tab_bar.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
@@ -8,8 +9,9 @@ import '../pages/chat_page.dart';
 import '../pages/status_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String uid;
-  const HomeScreen({Key? key, required this.uid}) : super(key: key);
+  final UserEntity userInfo;
+
+  const HomeScreen({Key? key, required this.userInfo}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,7 +21,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSearch = false;
   int _currentPageIndex = 1;
   PageController _pageViewController = PageController(initialPage: 1);
-  List<Widget> _pages = [CameraPage(), ChatPage(), StatusPage(), CallsPage()];
+
+  List<Widget> get _pages => [
+        CameraPage(),
+        ChatPage(
+          userInfo: widget.userInfo,
+        ),
+        StatusPage(),
+        CallsPage()
+      ];
 
   _buildScreen() {
     return Container(
@@ -49,37 +59,40 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _currentPageIndex != 0?AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: _isSearch == false ? primaryColor : Colors.transparent,
-        title: _isSearch == false
-            ? Text('WhatsApp Clone')
-            : Container(
-                height: 0,
-                width: 0,
-              ),
-        flexibleSpace: _isSearch == false
-            ? Text(
-                '',
-                style: TextStyle(fontSize: 0),
-              )
-            : _buildScreen(),
-        actions: [
-          InkWell(
-            child: Icon(Icons.search),
-            onTap: () {
-              setState(() {
-                _isSearch = true;
-              });
-            },
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Icon(Icons.more_vert),
-        ],
-      ):null,
+      appBar: _currentPageIndex != 0
+          ? AppBar(
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              backgroundColor:
+                  _isSearch == false ? primaryColor : Colors.transparent,
+              title: _isSearch == false
+                  ? Text('WhatsApp Clone')
+                  : Container(
+                      height: 0,
+                      width: 0,
+                    ),
+              flexibleSpace: _isSearch == false
+                  ? Text(
+                      '',
+                      style: TextStyle(fontSize: 0),
+                    )
+                  : _buildScreen(),
+              actions: [
+                InkWell(
+                  child: Icon(Icons.search),
+                  onTap: () {
+                    setState(() {
+                      _isSearch = true;
+                    });
+                  },
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(Icons.more_vert),
+              ],
+            )
+          : null,
       body: Column(
         children: [
           _isSearch == false

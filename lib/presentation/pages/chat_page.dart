@@ -1,11 +1,14 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp_clone/domain/entities/user_entity.dart';
+import 'package:whatsapp_clone/presentation/pages/sub_pages/select_contact_page.dart';
 import 'package:whatsapp_clone/presentation/pages/sub_pages/singe_item_chat_user_page.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final UserEntity userInfo;
+  const ChatPage({Key? key,required this.userInfo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,9 @@ class ChatPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         child: Icon(Icons.chat),
-        onPressed: () async {},
+        onPressed: ()  {
+Navigator.push(context, MaterialPageRoute(builder: (_)=>SelectContactPage(userInfo: userInfo)));
+        },
       ),
     );
   }
