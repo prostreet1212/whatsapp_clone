@@ -141,10 +141,10 @@ class _CameraPageState extends State<CameraPage> {
                         width: 50,
                         decoration: BoxDecoration(color: Colors.red.withOpacity(.2)),
                         child: FutureBuilder(
-                          future: snapshot.data![index].file,
+                          future: snapshot.data![index].thumbnailData,
                           builder: (context,snapshot){
                             if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                              return Image.file(
+                              return Image.memory(
                                 snapshot.data!,
                                 //_galleryPhotos[index].thumbnailData,
                                 //File(_galleryPhotos[index]),

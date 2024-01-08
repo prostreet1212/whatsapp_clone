@@ -32,20 +32,21 @@ class MyChatModel extends MyChatEntity {
           time: time,
         );
 
-  factory MyChatModel.fromSnapShot(Map<String,dynamic> snapshot) {
+  factory MyChatModel.fromSnapShot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return MyChatModel(
-      senderName: snapshot['senderName'],
-      senderUID: snapshot['senderUID'],
-      senderPhoneNumber: snapshot['senderPhoneNumber'],
-      recipientName: snapshot['recipientName'],
-      recipientUID: snapshot['recipientUID'],
-      recipientPhoneNumber: snapshot['recipientPhoneNumber'],
-      channelId: snapshot['channelId'],
-      time: snapshot['time'],
-      isArchived: snapshot['isArchived'],
-      isRead: snapshot['isRead'],
-      recentTextMessage: snapshot['recentTextMessage'],
-      profileURL: snapshot['profileURL'],
+      senderName: data['senderName'],
+      senderUID: data['senderUID'],
+      senderPhoneNumber: data['senderPhoneNumber'],
+      recipientName: data['recipientName'],
+      recipientUID: data['recipientUID'],
+      recipientPhoneNumber: data['recipientPhoneNumber'],
+      channelId: data['channelId'],
+      time: data['time'],
+      isArchived: data['isArchived'],
+      isRead: data['isRead'],
+      recentTextMessage: data['recentTextMessage'],
+      profileURL: data['profileURL'],
     );
   }
 

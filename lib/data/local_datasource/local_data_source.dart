@@ -9,9 +9,11 @@ class LocalDataSourceImpl extends LocalDataSource {
   @override
   Future<List<ContactEntity>> getDeviceNumbers() async {
     List<ContactEntity> contacts = [];
-    List<Contact> getContsctsData = await ContactsService.getContacts();
-    getContsctsData.forEach((myContact) {
+    List<Contact> getContactsData = await ContactsService.getContacts();
+    getContactsData.forEach((myContact) {
       myContact.phones!.forEach((phoneData) {
+        print(myContact.displayName!);
+        print(phoneData.value!);
         contacts.add(ContactEntity(
           phoneNumber: phoneData.value!,
           label: myContact.displayName!,

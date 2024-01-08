@@ -31,9 +31,9 @@ class FirebaseRepositotyImpl extends FirebaseRepository {
       await remoteDataSource.verifyPhoneNumber(phoneNumber);
 
   @override
-  Future<void> addToMyChat(MyChatEntity myChatEntity) {
-    throw UnimplementedError();
-  }
+  Future<void> addToMyChat(MyChatEntity myChatEntity)async =>
+     await remoteDataSource.addToMyChat(myChatEntity);
+
 
   @override
   Future<void> createOneToOneChatChannel(String uid, String otherUid)
@@ -47,14 +47,12 @@ class FirebaseRepositotyImpl extends FirebaseRepository {
 
   @override
   Stream<List<TextMessageEntity>> getMessages(String channelId) {
-    // TODO: implement getMessages
-    throw UnimplementedError();
+   return remoteDataSource.getMessages(channelId);
   }
 
   @override
   Stream<List<MyChatEntity>> getMyChat(String uid) {
-    // TODO: implement getMyChat
-    throw UnimplementedError();
+    return remoteDataSource.getMyChat(uid);
   }
 
   @override
@@ -62,8 +60,7 @@ class FirebaseRepositotyImpl extends FirebaseRepository {
       remoteDataSource.getOneToOneSingleUserChannelId(uid, otherUid);
 
   @override
-  Future<void> sendTextMessage(TextMessageEntity textMessageEntity, String channelId) {
-    // TODO: implement sendTextMessage
-    throw UnimplementedError();
+  Future<void> sendTextMessage(TextMessageEntity textMessageEntity, String channelId)async {
+    return remoteDataSource.sendTextMessage(textMessageEntity, channelId);
   }
 }

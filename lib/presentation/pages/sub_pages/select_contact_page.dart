@@ -6,6 +6,7 @@ import 'package:whatsapp_clone/domain/entities/user_entity.dart';
 import 'package:whatsapp_clone/presentation/bloc/get_device_number/get_device_number_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/get_device_number/get_device_number_state.dart';
 import 'package:whatsapp_clone/presentation/bloc/user/user_cubit.dart';
+import 'package:whatsapp_clone/presentation/pages/sub_pages/single_communication_page.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
 class SelectContactPage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _SelectContactPageState extends State<SelectContactPage> {
             contectNumberState.contacts.forEach((deviceUserNumber) {
               dbUsers.forEach((dbUserNumber) {
                 if (dbUserNumber.phoneNumber ==
-                    deviceUserNumber.phoneNumber.replaceAll(' ', '')) {
+                    deviceUserNumber.phoneNumber.replaceAll(' ', '').replaceAll('-', '')) {
                   contacts.add(ContactEntity(
                       phoneNumber: dbUserNumber.phoneNumber,
                       label: dbUserNumber.name,
@@ -162,9 +163,18 @@ class _SelectContactPageState extends State<SelectContactPage> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)
+                  =>SingleCommunicationPage(
+                      senderUID: widget.userInfo.uid,
+                      recipientUID: contacts[index].uid,
+                      senderName: widget.userInfo.name,
+                      recipientName: contacts[index].label,
+                      recipientPhoneNumber: contacts[index].phoneNumber,
+                      senderPhoneNumber: widget.userInfo.phoneNumber,)));
                   BlocProvider.of<UserCubit>(context)
                       .createChatChannel(uid: widget.userInfo.uid,
                       otherUid: contacts[index].uid);
+                  
                   
                 },
                 child: Container(
@@ -173,31 +183,35 @@ class _SelectContactPageState extends State<SelectContactPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 55,
-                        width: 55,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                        ),
-                        child: Image.asset('assets/profile_default.png'),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${contacts[index].label}',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-
+                      Row(
+                        children: [
+                          Container(
+                            height: 55,
+                            width: 55,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(50)),
                             ),
-                            SizedBox(height: 5,),
-                            Text('hi there i\'m using this app',overflow: TextOverflow.ellipsis,),
-                          ],
-                        ),
+                            child: Image.asset('assets/profile_default.png'),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${contacts[index].label}',
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.bold),
+
+                                ),
+                                SizedBox(height: 5,),
+                                Text('hi there i\'m using this app',overflow: TextOverflow.ellipsis,),
+                              ],
+                            ),
+                          )
+                        ],
                       )
                     ],
                   ),

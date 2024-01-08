@@ -13,6 +13,7 @@ import 'package:whatsapp_clone/domain/usecases/get_current_uid_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/get_device_numbers_usecase.dart';
 import 'package:whatsapp_clone/domain/usecases/is_sign_in_use_case.dart';
 import 'package:whatsapp_clone/presentation/bloc/auth/auth_cubit.dart';
+import 'package:whatsapp_clone/presentation/bloc/communication/communication_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/get_device_number/get_device_number_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/user/user_cubit.dart';
@@ -32,57 +33,66 @@ GetIt sl = GetIt.instance;
 
 Future<void> init() async {
   //future bloc
-  sl.registerFactory<AuthCubit>(() => AuthCubit(
-      isSignInUseCase: sl.call(),
-      getCurrentUidUseCase: sl.call(),
-      signOutUseCase: sl.call()));
+  sl.registerFactory<AuthCubit>(() =>
+      AuthCubit(
+          isSignInUseCase: sl.call(),
+          getCurrentUidUseCase: sl.call(),
+          signOutUseCase: sl.call()));
 
-  sl.registerFactory<PhoneAuthCubit>(() => PhoneAuthCubit(
+  sl.registerFactory<PhoneAuthCubit>(() =>
+      PhoneAuthCubit(
         signInWithPhoneNumberUseCase: sl.call(),
         verifyPhoneNumberUseCase: sl.call(),
         getCreateCurrentUserUseCase: sl.call(),
       ));
-  sl.registerFactory<GetDeviceNumberCubit>(() => GetDeviceNumberCubit(
-      getDeviceNumberUseCase: sl.call()));
-  sl.registerFactory<UserCubit>(() => UserCubit(
-      getAllUserUseCase: sl.call(),
-      createOneToOneChatChannelUseCase: sl.call()));
+  sl.registerFactory<GetDeviceNumberCubit>(() =>
+      GetDeviceNumberCubit(
+          getDeviceNumberUseCase: sl.call()));
+  sl.registerFactory<UserCubit>(() =>
+      UserCubit(
+          getAllUserUseCase: sl.call(),
+          createOneToOneChatChannelUseCase: sl.call()));
+  sl.registerFactory<CommunicationCubit>(() =>
+      CommunicationCubit(sendTextMessagesUseCase: sl.call(),
+          getOneToOneSingleUserChatChannelUseCase: sl.call(),
+          getTextMessagesUseCase: sl.call(),
+          addToMyChatUseCase: sl.call()));
 
   //usecase
   sl.registerLazySingleton<GetCreateCurrentUserUseCase>(
-      () => GetCreateCurrentUserUseCase(repository: sl.call()));
+          () => GetCreateCurrentUserUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetCurrentUidUseCase>(
-      () => GetCurrentUidUseCase(sl.call()));
+          () => GetCurrentUidUseCase(sl.call()));
   sl.registerLazySingleton<IsSignInUseCase>(() => IsSignInUseCase(sl.call()));
   sl.registerLazySingleton<SignInWithPhoneNumberUseCase>(
-      () => SignInWithPhoneNumberUseCase(repository: sl.call()));
+          () => SignInWithPhoneNumberUseCase(repository: sl.call()));
   sl.registerLazySingleton<SignOutUseCase>(
-      () => SignOutUseCase(repository: sl.call()));
+          () => SignOutUseCase(repository: sl.call()));
   sl.registerLazySingleton<VerifyPhoneNumberUseCase>(
-      () => VerifyPhoneNumberUseCase(repository: sl.call()));
+          () => VerifyPhoneNumberUseCase(repository: sl.call()));
 
   sl.registerLazySingleton<GetAllUsersUseCase>(
-      () => GetAllUsersUseCase(repository: sl.call()));
+          () => GetAllUsersUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetMyChatUseCase>(
-      () => GetMyChatUseCase(repository: sl.call()));
+          () => GetMyChatUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetTextMessagesUseCase>(
-      () => GetTextMessagesUseCase(repository: sl.call()));
+          () => GetTextMessagesUseCase(repository: sl.call()));
   sl.registerLazySingleton<SendTextMessageUseCase>(
-      () => SendTextMessageUseCase(repository: sl.call()));
+          () => SendTextMessageUseCase(repository: sl.call()));
   sl.registerLazySingleton<AddToMyChatUseCase>(
-      () => AddToMyChatUseCase(repository: sl.call()));
+          () => AddToMyChatUseCase(repository: sl.call()));
   sl.registerLazySingleton<CreateOneToOneChatChannelUseCase>(
-      () => CreateOneToOneChatChannelUseCase(repository: sl.call()));
+          () => CreateOneToOneChatChannelUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetOneToOneSingleUserChatChannelUseCase>(
-      () => GetOneToOneSingleUserChatChannelUseCase(repository: sl.call()));
+          () => GetOneToOneSingleUserChatChannelUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetDeviceNumberUseCase>(
-      () => GetDeviceNumberUseCase(deviceNumberRepository: sl.call()));
+          () => GetDeviceNumberUseCase(deviceNumberRepository: sl.call()));
 
   //repository
   sl.registerLazySingleton<FirebaseRepository>(
-      () => FirebaseRepositotyImpl(remoteDataSource: sl.call()));
+          () => FirebaseRepositotyImpl(remoteDataSource: sl.call()));
   sl.registerLazySingleton<GetDeviceNumberRepository>(
-      () => GetDeviceNumberRepositoryImpl(localDataSource: sl.call()));
+          () => GetDeviceNumberRepositoryImpl(localDataSource: sl.call()));
 
   //remote data
   sl.registerLazySingleton<FirebaseRemoteDataSource>(() =>
