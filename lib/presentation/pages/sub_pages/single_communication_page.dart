@@ -167,7 +167,7 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
                   Expanded(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxHeight: 60),
-                      child: const Scrollbar(
+                      child:  Scrollbar(
                         child: TextField(
                           maxLines: null,
                           style: TextStyle(fontSize: 14),
