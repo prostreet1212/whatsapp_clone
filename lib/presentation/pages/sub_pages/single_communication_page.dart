@@ -1,5 +1,7 @@
+import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:whatsapp_clone/presentation/bloc/communication/communication_cubit.dart';
 import 'package:whatsapp_clone/presentation/widgets/theme/style.dart';
 
@@ -27,9 +29,8 @@ class SingleCommunicationPage extends StatefulWidget {
 }
 
 class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
-
-  final TextEditingController _textMessageController=TextEditingController();
-  ScrollController _scrollController=ScrollController();
+  final TextEditingController _textMessageController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -132,18 +133,37 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
   Widget _messageListWidget(CommunicationLoaded messages) {
     return Expanded(
       child: ListView.builder(
-        controller: _scrollController,
+          controller: _scrollController,
           itemCount: messages.messages.length,
           itemBuilder: (_, index) {
-            return Container(
-              height: 200,
+            final message=messages.messages[index];
+            if(message.sederUID==widget.senderUID)
+            return _messageLayout(
+              color: Colors.lightGreen[400],
+              time: DateFormat('hh:mm a').format(message.time.toDate()),
+              align: TextAlign.left,
+              boxAlign: CrossAxisAlignment.end,
+              crossAlign: CrossAxisAlignment.start,
+              nip: BubbleNip.rightTop,
+              text: message.message,
             );
+            else
+              return _messageLayout(
+                color: Colors.lightGreen[400],
+                time: DateFormat('hh:mm a').format(message.time.toDate()),
+                align: TextAlign.left,
+                boxAlign: CrossAxisAlignment.end,
+                crossAlign: CrossAxisAlignment.start,
+                nip: BubbleNip.leftTop,
+                text: message.message,
+              );
           }),
     );
   }
 
   Widget _sendMessageTextField() {
     return Container(
+      margin: EdgeInsets.only(bottom: 10, left: 4, right: 4),
       child: Row(
         children: [
           Expanded(
@@ -161,13 +181,20 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
                   ]),
               child: Row(
                 children: [
-                  SizedBox(width:10,),
-                  Icon(Icons.insert_emoticon,color: Colors.grey[500],),
-                  SizedBox(width:10,),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.insert_emoticon,
+                    color: Colors.grey[500],
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Expanded(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxHeight: 60),
-                      child:  Scrollbar(
+                      child: Scrollbar(
                         child: TextField(
                           maxLines: null,
                           style: TextStyle(fontSize: 14),
@@ -186,20 +213,73 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
                       SizedBox(
                         width: 10,
                       ),
-                      Icon(Icons.camera_alt),
+                      _textMessageController.text.isEmpty
+                          ? Icon(Icons.camera_alt)
+                          : Text(''),
                     ],
+                  ),
+                  SizedBox(
+                    width: 15,
                   ),
                 ],
               ),
             ),
           ),
+          SizedBox(
+            width: 8,
+          ),
           Container(
             height: 45,
             width: 45,
-            child: Icon(Icons.mic,color: textIconColor,),
+            decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: Icon(
+              _textMessageController.text.isEmpty ? Icons.mic : Icons.send,
+              color: textIconColor,
+            ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _messageLayout({text, time, color, align, boxAlign, nip, crossAlign}) {
+    return Column(
+      crossAxisAlignment: crossAlign,
+      children: [
+        ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
+          child: Container(
+            padding: EdgeInsets.all(8),
+            margin: EdgeInsets.all(3),
+            child: Bubble(
+              color: color,
+              nip: nip,
+              child: Column(
+                crossAxisAlignment: crossAlign,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    text,
+                    textAlign: align,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    time,
+                    textAlign: align,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black.withOpacity(.4),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
