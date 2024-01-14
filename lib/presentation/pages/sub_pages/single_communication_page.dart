@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,14 +15,13 @@ class SingleCommunicationPage extends StatefulWidget {
   final String recipientPhoneNumber;
   final String senderPhoneNumber;
 
-  const SingleCommunicationPage(
-      {Key? key,
-      required this.senderUID,
-      required this.recipientUID,
-      required this.senderName,
-      required this.recipientName,
-      required this.recipientPhoneNumber,
-      required this.senderPhoneNumber})
+  const SingleCommunicationPage({Key? key,
+    required this.senderUID,
+    required this.recipientUID,
+    required this.senderName,
+    required this.recipientName,
+    required this.recipientPhoneNumber,
+    required this.senderPhoneNumber})
       : super(key: key);
 
   @override
@@ -36,6 +37,9 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
   void initState() {
     BlocProvider.of<CommunicationCubit>(context).getMessages(
         senderId: widget.senderUID, recipientId: widget.recipientUID);
+    _textMessageController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -64,7 +68,7 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
           Icon(Icons.more_vert),
         ],
         flexibleSpace: Container(
-          margin: EdgeInsets.only(top: 28),
+          margin: EdgeInsets.only(top: 30),
           child: Row(
             children: [
               InkWell(
@@ -131,28 +135,37 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
   }
 
   Widget _messageListWidget(CommunicationLoaded messages) {
+    Timer(
+        Duration(milliseconds: 100),
+            () {
+          _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInQuad);
+        }
+    );
     return Expanded(
       child: ListView.builder(
           controller: _scrollController,
           itemCount: messages.messages.length,
           itemBuilder: (_, index) {
-            final message=messages.messages[index];
-            if(message.sederUID==widget.senderUID)
-            return _messageLayout(
-              color: Colors.lightGreen[400],
-              time: DateFormat('hh:mm a').format(message.time.toDate()),
-              align: TextAlign.left,
-              boxAlign: CrossAxisAlignment.end,
-              crossAlign: CrossAxisAlignment.start,
-              nip: BubbleNip.rightTop,
-              text: message.message,
-            );
-            else
+            final message = messages.messages[index];
+            if (message.sederUID == widget.senderUID)
               return _messageLayout(
                 color: Colors.lightGreen[400],
                 time: DateFormat('hh:mm a').format(message.time.toDate()),
                 align: TextAlign.left,
-                boxAlign: CrossAxisAlignment.end,
+                boxAlign: CrossAxisAlignment.start,
+                crossAlign: CrossAxisAlignment.end,
+                nip: BubbleNip.rightTop,
+                text: message.message,
+              );
+            else
+              return _messageLayout(
+                color: Colors.white,
+                time: DateFormat('hh:mm a').format(message.time.toDate()),
+                align: TextAlign.left,
+                boxAlign: CrossAxisAlignment.start,
                 crossAlign: CrossAxisAlignment.start,
                 nip: BubbleNip.leftTop,
                 text: message.message,
@@ -228,15 +241,22 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
           SizedBox(
             width: 8,
           ),
-          Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.all(Radius.circular(50))),
-            child: Icon(
-              _textMessageController.text.isEmpty ? Icons.mic : Icons.send,
-              color: textIconColor,
+          InkWell(
+            onTap: () {
+              if (_textMessageController.text.isNotEmpty) {
+                _sendTextMessage();
+              }
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(50))),
+              child: Icon(
+                _textMessageController.text.isEmpty ? Icons.mic : Icons.send,
+                color: textIconColor,
+              ),
             ),
           )
         ],
@@ -250,7 +270,10 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
       children: [
         ConstrainedBox(
           constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
+          BoxConstraints(maxWidth: MediaQuery
+              .of(context)
+              .size
+              .width * 0.9),
           child: Container(
             padding: EdgeInsets.all(8),
             margin: EdgeInsets.all(3),
@@ -282,4 +305,20 @@ class _SingleCommunicationPageState extends State<SingleCommunicationPage> {
       ],
     );
   }
+
+  void _sendTextMessage() {
+    if (_textMessageController.text.isNotEmpty) {
+      BlocProvider.of<CommunicationCubit>(context)
+          .sendTextMessage(
+          senderName: widget.senderName,
+          senderId: widget.senderUID,
+          recipientId: widget.recipientUID,
+          recipientName: widget.recipientName,
+          message: _textMessageController.text,
+          recipientPhoneNumber: widget.recipientPhoneNumber,
+          senderPhoneNumber: widget.senderPhoneNumber);
+      _textMessageController.clear();
+    }
+  }
+
 }
