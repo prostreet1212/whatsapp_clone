@@ -15,6 +15,7 @@ import 'package:whatsapp_clone/domain/usecases/is_sign_in_use_case.dart';
 import 'package:whatsapp_clone/presentation/bloc/auth/auth_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/communication/communication_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/get_device_number/get_device_number_cubit.dart';
+import 'package:whatsapp_clone/presentation/bloc/my_chat/my_chat_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/phone_auth/phone_auth_cubit.dart';
 import 'package:whatsapp_clone/presentation/bloc/user/user_cubit.dart';
 
@@ -57,6 +58,9 @@ Future<void> init() async {
           getOneToOneSingleUserChatChannelUseCase: sl.call(),
           getTextMessagesUseCase: sl.call(),
           addToMyChatUseCase: sl.call()));
+  sl.registerFactory<MyChatCubit>(() => MyChatCubit(
+      getMyChatUseCase: sl.call()));
+
 
   //usecase
   sl.registerLazySingleton<GetCreateCurrentUserUseCase>(

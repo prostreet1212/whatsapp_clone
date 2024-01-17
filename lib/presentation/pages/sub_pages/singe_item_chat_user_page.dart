@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SingleItemChatUserPage extends StatelessWidget {
-  const SingleItemChatUserPage({Key? key}) : super(key: key);
+  final String time;
+  final String recentSendMessage;
+  final String name;
+  const SingleItemChatUserPage({Key? key,
+    required this.time,
+    required this.recentSendMessage,
+    required this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +35,7 @@ class SingleItemChatUserPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'User Name',
+                      name,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
@@ -37,7 +43,7 @@ class SingleItemChatUserPage extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      'Hi there i\'m using this app',
+                      recentSendMessage,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     )
@@ -45,7 +51,7 @@ class SingleItemChatUserPage extends StatelessWidget {
                 )
               ],
             ),
-            Text('12:47 AM'),
+            Text(time),
           ]),
           Padding(
             padding: EdgeInsets.only(left: 60, right: 10),
